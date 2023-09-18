@@ -1,5 +1,8 @@
 const man = document.getElementById('man');
 const food = document.getElementById('food');
+const obstacle1 = document.getElementById('obstacle1');
+const obstacle2 = document.getElementById('obstacle2');
+const obstacle3 = document.getElementById('obstacle3');
 
 man.style.transform = `translate(19rem,19rem)`;
 let manPositionX = 19;
@@ -20,6 +23,7 @@ const foodGenerationOnCollision = () => {
 
 const checkCollision = () => {
 	let manBCR = man.getBoundingClientRect();
+	console.log(manBCR.left);
 	let foodBCR = food.getBoundingClientRect();
 	if (manBCR.left === foodBCR.left && manBCR.right === foodBCR.right && manBCR.top === foodBCR.top && manBCR.bottom === foodBCR.bottom) {
 		foodGenerationOnCollision();
