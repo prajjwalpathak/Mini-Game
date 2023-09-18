@@ -1,8 +1,9 @@
 const snake = document.getElementById('snake');
 const food = document.getElementById('food');
 
-let snakePositionX = 0;
-let snakePositionY = 0;
+snake.style.transform = `translate(19rem,19rem)`;
+let snakePositionX = 19;
+let snakePositionY = 19;
 
 let foodPositionX = Math.floor(Math.random() * 40);
 let foodPositionY = Math.floor(Math.random() * 40);
