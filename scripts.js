@@ -3,6 +3,8 @@ const food = document.getElementById('food');
 const obstacle1 = document.getElementById('obstacle1');
 const obstacle2 = document.getElementById('obstacle2');
 const obstacle3 = document.getElementById('obstacle3');
+const timeBar = document.getElementById('time-bar');
+const score = document.getElementById('score');
 
 man.style.transform = `translate(19rem,19rem)`;
 let manPositionX = 19;
@@ -10,6 +12,14 @@ let manPositionY = 19;
 
 let foodPositionX = Math.floor(Math.random() * 40);
 let foodPositionY = Math.floor(Math.random() * 40);
+
+let currentScore = 0;
+
+timeBar.classList.add('start-time');
+const resetTimeout = setTimeout(() => {
+	currentScore = 0;
+	changeScore();
+}, 60000);
 
 const foodGeneration = () => {
 	food.style.transform = `translate(${foodPositionX}rem, ${foodPositionY}rem)`;
@@ -21,11 +31,23 @@ const foodGenerationOnCollision = () => {
 	foodGeneration();
 };
 
+const changeScore = () => {
+	if (currentScore < 9) {
+		score.innerText = `0${currentScore}`;
+	} else {
+		score.innerText = `${currentScore}`;
+	}
+};
+
+changeScore();
+
 const checkCollision = () => {
 	let manBCR = man.getBoundingClientRect();
 	console.log(manBCR.left);
 	let foodBCR = food.getBoundingClientRect();
 	if (manBCR.left === foodBCR.left && manBCR.right === foodBCR.right && manBCR.top === foodBCR.top && manBCR.bottom === foodBCR.bottom) {
+		currentScore = currentScore + 1;
+		changeScore();
 		foodGenerationOnCollision();
 	}
 };
