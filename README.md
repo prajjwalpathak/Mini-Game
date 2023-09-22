@@ -1,2 +1,2 @@
-# Snake_Game
-Snake Game
+# Mini_Game
+Mini Game
