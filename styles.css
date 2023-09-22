@@ -10,6 +10,36 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+}
+
+#main-screen {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: lightgray;
+	z-index: 1;
+}
+
+.button-wrapper {
+}
+
+.start-btn,
+.play-again-btn,
+.quit-btn {
+	padding: 0.5rem 1rem;
+	background-color: cornflowerblue;
+	color: black;
+	border-radius: 3px;
+}
+
+.display-none {
+	display: none;
 }
 
 .game-wrapper {
@@ -52,7 +82,7 @@ body {
 #time-bar {
 	width: 1rem;
 	height: 0rem;
-	background-color: chartreuse;
+	background-color: rgb(0, 255, 0);
 }
 
 #game-container {
@@ -63,14 +93,12 @@ body {
 }
 
 #man {
-	position: absolute;
 	width: 1rem;
 	height: 1rem;
 	background-color: rgb(0, 255, 0);
 }
 
 #food {
-	position: absolute;
 	width: 1rem;
 	height: 1rem;
 	background-color: red;
@@ -80,8 +108,21 @@ body {
 #obstacle2,
 #obstacle3 {
 	display: none;
-	position: absolute;
 	width: 4rem;
 	height: 4rem;
 	background-color: orange;
+}
+
+#end-screen {
+	position: absolute;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: lightgray;
+	z-index: 1;
 }

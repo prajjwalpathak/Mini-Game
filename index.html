@@ -9,6 +9,11 @@
 </head>
 
 <body>
+    <div id="main-screen">
+        <div class="button-wrapper">
+            <button class="start-btn" onclick="startGame()">Start</button>
+        </div>
+    </div>
     <div class="game-wrapper">
         <div class="ui-left">
             <div class="time-bar-wrapper">
@@ -17,6 +22,7 @@
             <div class="score-wrapper">
                 <div id="score">00</div>
             </div>
+            <button class="quit-btn" onclick="quitGame()">Quit Game</button>
         </div>
         <div id="game-container">
             <div id="man"></div>
@@ -26,6 +32,13 @@
             <div id="obstacle3"></div>
         </div>
         <div class="ui-right"></div>
+    </div>
+    <div id="end-screen">
+        <div class="score-wrapper">
+            <h5 class="final-score-heading">Your Score</h5>
+            <h6 id="final-score">00</h6>
+            <button class="play-again-btn" onclick="startGame()">Play Again</button>
+        </div>
     </div>
 </body>
 <script src="scripts.js"></script>
