@@ -6,8 +6,12 @@ const score = document.getElementById('score');
 let manPositionX = 19;
 let manPositionY = 19;
 
-let foodPositionX = Math.floor(Math.random() * 40);
-let foodPositionY = Math.floor(Math.random() * 40);
+const randomNumber = (num) => {
+	return Math.floor(Math.random() * num);
+};
+
+let foodPositionX = randomNumber(40);
+let foodPositionY = randomNumber(40);
 
 let currentScore = 0;
 let resetTimeout;
@@ -19,8 +23,8 @@ const foodGeneration = () => {
 };
 
 const foodGenerationOnCollision = () => {
-	foodPositionX = Math.floor(Math.random() * 40);
-	foodPositionY = Math.floor(Math.random() * 40);
+	foodPositionX = randomNumber(40);
+	foodPositionY = randomNumber(40);
 	foodGeneration();
 };
 
@@ -42,8 +46,8 @@ const declareScore = () => {
 const startGame = () => {
 	document.getElementById('main-screen').style.display = 'none';
 	document.getElementById('end-screen').style.display = 'none';
-	foodPositionX = Math.floor(Math.random() * 40);
-	foodPositionY = Math.floor(Math.random() * 40);
+	foodPositionX = randomNumber(40);
+	foodPositionY = randomNumber(40);
 	foodGeneration();
 	man.style.transform = `translate(19rem,19rem)`;
 	manPositionX = 19;

@@ -95,12 +95,14 @@ body {
 }
 
 #man {
+	position: absolute;
 	width: 1rem;
 	height: 1rem;
 	background-color: rgb(0, 255, 0);
 }
 
 #food {
+	position: absolute;
 	width: 1rem;
 	height: 1rem;
 	background-color: red;
