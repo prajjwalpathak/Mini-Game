@@ -1,131 +1,134 @@
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 #main-screen {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	background-color: lightgray;
-	z-index: 1;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: lightgray;
+  z-index: 1;
 }
 
 .start-btn,
 .play-again-btn,
-.quit-btn {
-	padding: 0.5rem 1rem;
-	background-color: yellow;
-	color: black;
-	border-radius: 3px;
-	border: none;
-	border: thin solid rgb(0, 0, 0);
-	font-size: 1rem;
-	font-weight: bold;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+.quit-btn,
+.pause-btn {
+  padding: 0.5rem 1rem;
+  background-color: yellow;
+  color: black;
+  border-radius: 3px;
+  border: none;
+  border: thin solid rgb(0, 0, 0);
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .display-none {
-	display: none;
+  display: none;
 }
 
 .game-wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ui-left,
 .ui-right {
-	width: 10rem;
-	height: 40rem;
-	background-color: lightgray;
+  width: 10rem;
+  height: 40rem;
+  background-color: lightgray;
 }
 
 @keyframes timer {
-	from {
-		height: 0;
-	}
-	to {
-		height: 6rem;
-	}
+  from {
+    height: 0;
+  }
+  to {
+    height: 6rem;
+  }
 }
 
 .start-time {
-	animation-name: timer;
-	animation-duration: 60s;
-	animation-timing-function: linear;
+  animation-name: timer;
+  animation-duration: 60s;
+  animation-timing-function: linear;
 }
 
 .time-bar-wrapper {
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-	width: calc(1rem + 3px);
-	height: calc(6rem + 3px);
-	border: medium solid black;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: calc(1rem + 3px);
+  height: calc(6rem + 3px);
+  border: medium solid black;
 }
 
 #time-bar {
-	width: 1rem;
-	height: 0rem;
-	background-color: rgb(0, 0, 255);
+  width: 1rem;
+  height: 0rem;
+  background-color: rgb(0, 0, 255);
 }
 
 #game-container {
-	position: relative;
-	width: 40rem;
-	height: 40rem;
-	background-color: black;
+  position: relative;
+  width: 40rem;
+  height: 40rem;
+  background-color: black;
 }
 
 #man {
-	position: absolute;
-	width: 1rem;
-	height: 1rem;
-	background-color: rgb(0, 255, 0);
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  background-color: rgb(0, 255, 0);
 }
 
 #food {
-	position: absolute;
-	width: 1rem;
-	height: 1rem;
-	background-color: red;
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  background-color: red;
 }
 
 #end-screen {
-	position: absolute;
-	display: none;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	background-color: lightgray;
-	z-index: 1;
+  position: absolute;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: lightgray;
+  z-index: 1;
 }
 
 #score,
 #final-score,
 .final-score-heading {
-	font-size: 1rem;
-	font-weight: bold;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }

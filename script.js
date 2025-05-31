@@ -43,6 +43,10 @@ const declareScore = () => {
 	}, 10);
 };
 
+// const startTimer = () => {
+	
+// }
+
 const startGame = () => {
 	document.getElementById('main-screen').style.display = 'none';
 	document.getElementById('end-screen').style.display = 'none';
@@ -93,6 +97,10 @@ const startGame = () => {
 	document.addEventListener('keydown', movement);
 	document.addEventListener('keydown', checkCollision);
 };
+
+// const pauseGame = () => {
+// 	timeBar.classList.remove('start-time');
+// };
 
 const quitGame = () => {
 	timeBar.classList.remove('start-time');
