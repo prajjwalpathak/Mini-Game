@@ -109,3 +109,8 @@ const quitGame = () => {
 	document.removeEventListener('keydown', movement);
 	document.removeEventListener('keydown', checkCollision);
 };
+
+/* To do:
+-> Add timer
+-> Pause Game
+-> CSS changes */
