@@ -1,46 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="images/favicon.ico" rel="icon" type="image/x-icon">
     <link href="styles.css" rel="stylesheet">
-    <title>Mini_Game</title>
+    <title>Mini Game</title>
 </head>
-
 <body>
-    <!-- <div id="main-screen">
-        <div class="button-wrapper">
-            <button class="start-btn" onclick="startGame()">Start</button>
-        </div>
-    </div> -->
-    <div class="game-wrapper">
-        <div class="ui-left">
-            <div class="time-bar-wrapper">
-                <div id="time-bar"></div>
-            </div>
-            <div class="score-wrapper">
-                <div id="score">00</div>
-            </div>
-            <button class="start-btn" onclick="startGame()">Start</button>
-            <!-- <button class="pause-btn" onclick="pauseGame()">Pause Game</button> -->
-            <button class="quit-btn" onclick="quitGame()">Quit</button>
-        </div>
-        <div id="game-container">
-            <div id="food"></div>
-            <div id="man"></div>
-        </div>
-        <div class="ui-right"></div>
-    </div>
-    <div id="end-screen">
-        <div class="score-wrapper">
-            <h5 class="final-score-heading">Your Score</h5>
-            <h6 id="final-score">00</h6>
-            <button class="play-again-btn" onclick="startGame()">Play Again</button>
-        </div>
-    </div>
+    <canvas></canvas>
 </body>
-<script src="script.js"></script>
-
+<script src="modules/script.js" type="module"></script>
+<script src="modules/utils.js" type="module"></script>
 </html>
