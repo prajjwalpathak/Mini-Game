@@ -44,41 +44,46 @@ const declareScore = () => {
 	}, 10);
 };
 
+// Time
 let clock = {
 	min: 0,
 	sec: 0,
 };
+
+// Convert seconds to minutes and seconds
 const secToClock = (sec) => {
 	const minutes = Math.floor((sec % 3600) / 60);
 	const seconds = sec % 60;
 	return { minutes, seconds };
-}
+};
+
 
 // Interval Id for timer
-let time = 0
+let time = 60;
 let intervalId;
-const startTimer = () => {
-	intervalId = setInterval(() => {
-		time += 1;
-		clock.min = secToClock(time).minutes;
-		clock.sec = secToClock(time).seconds;
-		let formattedMinutes = String(clock.min).padStart(2, '0');
-		let formattedSeconds = String(clock.sec).padStart(2, '0');
-		console.log(`${formattedMinutes}:${formattedSeconds}`);
-	}, 1000);
-};
-startTimer();
 
 // Clear the interval Id for timer
 const stopTimer = () => {
 	setTimeout(() => {
 		clearInterval(intervalId);
-	}, 10000);
-}
-stopTimer();
+	}, 60000);
+};
+
+const startTimer = () => {
+	intervalId = setInterval(() => {
+		time -= 1;
+		clock.min = secToClock(time).minutes;
+		clock.sec = secToClock(time).seconds;
+		let formattedMinutes = String(clock.min).padStart(2, "0");
+		let formattedSeconds = String(clock.sec).padStart(2, "0");
+		console.log(`${formattedMinutes}:${formattedSeconds}`);
+	}, 1000);
+	stopTimer();
+};
 
 const startGame = () => {
-	document.getElementById("main-screen").style.display = "none";
+	startTimer();
+	// document.getElementById("main-screen").style.display = "none";
 	document.getElementById("end-screen").style.display = "none";
 	foodPositionX = randomNumber(40);
 	foodPositionY = randomNumber(40);
