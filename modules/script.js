@@ -1,21 +1,33 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-canvas.width = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-canvas.height = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 // Resize canvas everytime the window is resized
 window.addEventListener("resize", () => {
-	canvas.width = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-	canvas.height = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-	init();
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 });
+
+let gameArea = {
+	x: 100,
+	y: 100,
+	width: Math.min(window.innerHeight, window.innerWidth) * 0.8,
+	height: Math.min(window.innerHeight, window.innerWidth) * 0.8,
+}
+c.beginPath();
+c.fillRect(gameArea.x, gameArea.y, gameArea.length, gameArea.length);
+c.fillStyle = 'black';
+c.stroke();
+
+
 
 // Player dimensions
 let side = 32;
 let player = {
 	length: side,
-	x: canvas.width / 2 - side / 2,
-	y: canvas.width / 2 - side / 2,
+	x: gameArea.width / 2 - side / 2,
+	y: gameArea.height / 2 - side / 2,
 };
 
 // Event listener for Player movements
@@ -29,21 +41,22 @@ window.addEventListener("keydown", (e) => {
 const createSprite = (sprite) => {
 	c.beginPath();
 	c.fillRect(sprite.x, sprite.y, sprite.length, sprite.length);
-	c.stroke();
 	c.fill();
+	c.stroke();
 };
 
-const init = () => {
-	// Your code
-};
+// const init = () => {
+// 	initGameArea();
+// };
 
 // Call init()
-init();
+// init();
 
 // Animate function
 const animate = () => {
 	requestAnimationFrame(animate);
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+	// initGameArea();
 	createSprite(player);
 };
 
