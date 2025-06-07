@@ -10,6 +10,29 @@ window.addEventListener("resize", () => {
 	init();
 });
 
+// Player dimensions
+let side = 32;
+let player = {
+	length: side,
+	x: canvas.width / 2 - side / 2,
+	y: canvas.width / 2 - side / 2,
+};
+
+// Event listener for Player movements
+window.addEventListener("keydown", (e) => {
+	if (e.key == "d") player.x += side;
+	else if (e.key == "s") player.y += side;
+	else if (e.key == "a") player.x -= side;
+	else if (e.key == "w") player.y -= side;
+});
+
+const createSprite = (sprite) => {
+	c.beginPath();
+	c.fillRect(sprite.x, sprite.y, sprite.length, sprite.length);
+	c.stroke();
+	c.fill();
+};
+
 const init = () => {
 	// Your code
 };
@@ -20,8 +43,8 @@ init();
 // Animate function
 const animate = () => {
 	requestAnimationFrame(animate);
-	// c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-	// Your code
+	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+	createSprite(player);
 };
 
 // Call animate()
