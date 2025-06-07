@@ -1,12 +1,12 @@
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+canvas.height = Math.min(window.innerHeight, window.innerWidth) * 0.8;
 
 // Resize canvas everytime the window is resized
 window.addEventListener("resize", () => {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.width = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+	canvas.height = Math.min(window.innerHeight, window.innerWidth) * 0.8;
 	init();
 });
 
