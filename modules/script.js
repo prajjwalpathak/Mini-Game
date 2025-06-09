@@ -34,10 +34,10 @@ const init = () => {
 	gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
 	gameAreaColor = '#111111';
 
-	playerWidth = gameAreaWidth / 10;
-	playerHeight = gameAreaHeight / 10;
-	playerX = gameAreaWidth / 2 - playerWidth / 2;
-	playerY = gameAreaHeight / 2 - playerHeight / 2;
+	playerWidth = gameAreaWidth / 16;
+	playerHeight = gameAreaHeight / 16;
+	playerX = window.innerWidth / 2;
+	playerY = window.innerHeight / 2;
 	playerColor = '#FFFF00';
 
 	createSprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
