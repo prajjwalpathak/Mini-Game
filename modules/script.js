@@ -10,62 +10,57 @@ window.addEventListener("resize", () => {
 	init();
 });
 
-// Play area
-let gameArea;
-
-// Player dimensions
-let player;
-let playerDimensions = {
-	width: 32,
-	height: 32,
-};
-
-// Event listener for Player movements
-window.addEventListener("keydown", (e) => {
-	if (e.key == "d") player.x += playerDimensions.width;
-	else if (e.key == "s") player.y += playerDimensions.height;
-	else if (e.key == "a") player.x -= playerDimensions.width;
-	else if (e.key == "w") player.y -= playerDimensions.height;
-});
-
-const drawGameArea = (area) => {
-	c.fillStyle = area.color;
-	c.fillRect(area.x, area.y, area.width, area.height);
+const createSprite = (x, y, width, height, color) => {
+	c.fillStyle = color;
+	c.fillRect(x, y, width, height);
 }
 
-const createSprite = (sprite) => {
-	c.fillStyle = sprite.color;
-	c.fillRect(sprite.x, sprite.y, sprite.width, sprite.height);
-};
+let gameAreaX = window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
+let gameAreaY = window.innerHeight / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
+let gameAreaWidth = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+let gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+let gameAreaColor = '#111111';
+
+let playerWidth = gameAreaWidth / 10;
+let playerHeight = gameAreaHeight / 10;
+let playerX = gameAreaWidth / 2 - playerWidth / 2;
+let playerY = gameAreaHeight / 2 - playerHeight / 2;
+let playerColor = '#FFFF00';
 
 const init = () => {
-	gameArea = {
-		x: window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2,
-		y: window.innerHeight / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2,
-		width: Math.min(window.innerHeight, window.innerWidth) * 0.8,
-		height: Math.min(window.innerHeight, window.innerWidth) * 0.8,
-		color: 'black',
-	}
-	player = {
-		x: gameArea.width / 2 - playerDimensions.width / 2,
-		y: gameArea.height / 2 - playerDimensions.height / 2,
-		width: playerDimensions.width,
-		height: playerDimensions.height,
-		color: 'FFFF00'
-	};
-	drawGameArea(gameArea);
-	createSprite(player)
+	gameAreaX = window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
+	gameAreaY = window.innerHeight / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
+	gameAreaWidth = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+	gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
+	gameAreaColor = '#111111';
+
+	playerWidth = gameAreaWidth / 10;
+	playerHeight = gameAreaHeight / 10;
+	playerX = gameAreaWidth / 2 - playerWidth / 2;
+	playerY = gameAreaHeight / 2 - playerHeight / 2;
+	playerColor = '#FFFF00';
+
+	createSprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
+	createSprite(playerX, playerY, playerWidth, playerHeight, playerColor);
 };
 
 // Call init()
 init();
 
+// Event listener for Player movements
+window.addEventListener("keydown", (e) => {
+	if (e.key == "d") playerX += playerWidth;
+	else if (e.key == "s") playerY += playerHeight;
+	else if (e.key == "a") playerX -= playerWidth;
+	else if (e.key == "w") playerY -= playerHeight;
+});
+
 // Animate function
 const animate = () => {
 	requestAnimationFrame(animate);
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-	drawGameArea(gameArea);
-	createSprite(player);
+	createSprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
+	createSprite(playerX, playerY, playerWidth, playerHeight, playerColor);
 };
 
 // Call animate()
