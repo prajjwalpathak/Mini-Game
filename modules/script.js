@@ -10,10 +10,30 @@ window.addEventListener("resize", () => {
 	init();
 });
 
-const createSprite = (x, y, width, height, color) => {
-	c.fillStyle = color;
-	c.fillRect(x, y, width, height);
+// const createSprite = (x, y, width, height, color) => {
+// 	c.fillStyle = color;
+// 	c.fillRect(x, y, width, height);
+// }
+
+class sprite {
+	constructor(x, y, width, height, color) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.color = color;
+	}
+	createSprite() {
+		c.fillStyle = this.color;
+		c.fillRect(this.x, this.y, this.width, this.height);
+	}
+	moveSprite() {
+
+	}
 }
+
+let gameArea;
+let player;
 
 let gameAreaX = window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
 let gameAreaY = window.innerHeight / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
@@ -36,12 +56,14 @@ const init = () => {
 
 	playerWidth = gameAreaWidth / 16;
 	playerHeight = gameAreaHeight / 16;
-	playerX = window.innerWidth / 2;
-	playerY = window.innerHeight / 2;
+	playerX = gameAreaX;
+	playerY = gameAreaY;
 	playerColor = '#FFFF00';
 
-	createSprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
-	createSprite(playerX, playerY, playerWidth, playerHeight, playerColor);
+	gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
+	player = new sprite(playerX, playerY, playerWidth, playerHeight, playerColor);
+	gameArea.createSprite();
+	player.createSprite();
 };
 
 // Call init()
@@ -49,18 +71,18 @@ init();
 
 // Event listener for Player movements
 window.addEventListener("keydown", (e) => {
-	if (e.key == "d") playerX += playerWidth;
-	else if (e.key == "s") playerY += playerHeight;
-	else if (e.key == "a") playerX -= playerWidth;
-	else if (e.key == "w") playerY -= playerHeight;
+	if (e.key == "d") player.x += player.width;
+	else if (e.key == "s") player.y += player.height;
+	else if (e.key == "a") player.x -= player.width;
+	else if (e.key == "w") player.y -= player.height;
 });
 
 // Animate function
 const animate = () => {
 	requestAnimationFrame(animate);
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-	createSprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
-	createSprite(playerX, playerY, playerWidth, playerHeight, playerColor);
+	gameArea.createSprite();
+	player.createSprite();
 };
 
 // Call animate()
