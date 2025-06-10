@@ -16,19 +16,17 @@ window.addEventListener("resize", () => {
 // }
 
 class sprite {
-	constructor(x, y, width, height, color) {
+	constructor(x, y, width, height, speed, color) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.speed = speed;
 		this.color = color;
 	}
 	createSprite() {
 		c.fillStyle = this.color;
 		c.fillRect(this.x, this.y, this.width, this.height);
-	}
-	moveSprite() {
-
 	}
 }
 
@@ -60,8 +58,8 @@ const init = () => {
 	playerY = gameAreaY;
 	playerColor = '#FFFF00';
 
-	gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, gameAreaColor);
-	player = new sprite(playerX, playerY, playerWidth, playerHeight, playerColor);
+	gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, gameAreaColor);
+	player = new sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, playerColor);
 	gameArea.createSprite();
 	player.createSprite();
 };
@@ -71,11 +69,28 @@ init();
 
 // Event listener for Player movements
 window.addEventListener("keydown", (e) => {
-	if (e.key == "d") player.x += player.width;
-	else if (e.key == "s") player.y += player.height;
-	else if (e.key == "a") player.x -= player.width;
-	else if (e.key == "w") player.y -= player.height;
+	if (e.key == "d") player.x += player.speed;
+	else if (e.key == "s") player.y += player.speed;
+	else if (e.key == "a") player.x -= player.speed;
+	else if (e.key == "w") player.y -= player.speed;
 });
+
+// Collision Detection with walls
+const collisionResolutionWalls = (sprite) => {
+	if (sprite.x <= gameArea.x) {
+		// player.speed = 0;
+	}
+	else if (sprite.x >= gameArea.x + gameArea.height - sprite.width) {
+		console.log('Colliding');
+	}
+	if (sprite.y <= gameArea.y) {
+		console.log('Colliding');
+	}
+	else if (sprite.y >= gameArea.y + gameArea.height - sprite.height) {
+		console.log('Colliding');
+	}
+}
+
 
 // Animate function
 const animate = () => {
@@ -83,6 +98,7 @@ const animate = () => {
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
 	gameArea.createSprite();
 	player.createSprite();
+	collisionResolutionWalls(player);
 };
 
 // Call animate()
