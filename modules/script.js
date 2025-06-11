@@ -10,11 +10,6 @@ window.addEventListener("resize", () => {
 	init();
 });
 
-// const createSprite = (x, y, width, height, color) => {
-// 	c.fillStyle = color;
-// 	c.fillRect(x, y, width, height);
-// }
-
 class sprite {
 	constructor(x, y, width, height, speed, color) {
 		this.x = x;
@@ -33,17 +28,17 @@ class sprite {
 let gameArea;
 let player;
 
-let gameAreaX = window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
-let gameAreaY = window.innerHeight / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
-let gameAreaWidth = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-let gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-let gameAreaColor = '#111111';
+let gameAreaX;
+let gameAreaY;
+let gameAreaWidth;
+let gameAreaHeight;
+let gameAreaColor;
 
-let playerWidth = gameAreaWidth / 10;
-let playerHeight = gameAreaHeight / 10;
-let playerX = gameAreaWidth / 2 - playerWidth / 2;
-let playerY = gameAreaHeight / 2 - playerHeight / 2;
-let playerColor = '#FFFF00';
+let playerWidth;
+let playerHeight;
+let playerX;
+let playerY;
+let playerColor;
 
 const init = () => {
 	gameAreaX = window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
@@ -54,8 +49,8 @@ const init = () => {
 
 	playerWidth = gameAreaWidth / 16;
 	playerHeight = gameAreaHeight / 16;
-	playerX = gameAreaX;
-	playerY = gameAreaY;
+	playerX = gameAreaX + gameAreaWidth / 2;
+	playerY = gameAreaY + gameAreaHeight / 2;
 	playerColor = '#FFFF00';
 
 	gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, gameAreaColor);
@@ -86,18 +81,19 @@ window.addEventListener("keydown", (e) => {
 });
 
 // Collision Detection with walls
+// Added 1px for correction - Not pixel perfect
 const isCollidingWithWall = (sprite, wall) => {
 	if (wall === 'right') {
-		if (sprite.x >= gameArea.x + gameArea.height - sprite.width) return true;
+		if (sprite.x + 1 >= gameArea.x + gameArea.width - sprite.width) return true;
 	}
 	else if (wall === 'bottom') {
-		if (sprite.y >= gameArea.y + gameArea.height - sprite.height) return true;
+		if (sprite.y + 1 >= gameArea.y + gameArea.height - sprite.height) return true;
 	}
 	else if (wall === 'left') {
-		if (sprite.x <= gameArea.x) return true;
+		if (sprite.x <= gameArea.x + 1) return true; 
 	}
 	else if (wall === 'top') {
-		if (sprite.y <= gameArea.y) return true;
+		if (sprite.y <= gameArea.y + 1) return true;
 	}
 	return false;
 }
