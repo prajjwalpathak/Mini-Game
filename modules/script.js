@@ -67,28 +67,39 @@ const init = () => {
 // Call init()
 init();
 
-// Event listener for Player movements
+// Event listener for player movements
+// On keydown simultaneously check if player is colliding with the wall or not
+// if not then only add the speed to player's position
 window.addEventListener("keydown", (e) => {
-	if (e.key == "d") player.x += player.speed;
-	else if (e.key == "s") player.y += player.speed;
-	else if (e.key == "a") player.x -= player.speed;
-	else if (e.key == "w") player.y -= player.speed;
+	if (e.key == "d" && !isCollidingWithWall(player, 'right')) {
+		player.x += player.speed;
+	}
+	else if (e.key == "s" && !isCollidingWithWall(player, 'bottom')) {
+		player.y += player.speed;
+	}
+	else if (e.key == "a" && !isCollidingWithWall(player, 'left')) {
+		player.x -= player.speed;
+	}
+	else if (e.key == "w" && !isCollidingWithWall(player, 'top')) {
+		player.y -= player.speed;
+	}
 });
 
 // Collision Detection with walls
-const collisionResolutionWalls = (sprite) => {
-	if (sprite.x <= gameArea.x) {
-		// player.speed = 0;
+const isCollidingWithWall = (sprite, wall) => {
+	if (wall === 'right') {
+		if (sprite.x >= gameArea.x + gameArea.height - sprite.width) return true;
 	}
-	else if (sprite.x >= gameArea.x + gameArea.height - sprite.width) {
-		console.log('Colliding');
+	else if (wall === 'bottom') {
+		if (sprite.y >= gameArea.y + gameArea.height - sprite.height) return true;
 	}
-	if (sprite.y <= gameArea.y) {
-		console.log('Colliding');
+	else if (wall === 'left') {
+		if (sprite.x <= gameArea.x) return true;
 	}
-	else if (sprite.y >= gameArea.y + gameArea.height - sprite.height) {
-		console.log('Colliding');
+	else if (wall === 'top') {
+		if (sprite.y <= gameArea.y) return true;
 	}
+	return false;
 }
 
 
@@ -98,7 +109,6 @@ const animate = () => {
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
 	gameArea.createSprite();
 	player.createSprite();
-	collisionResolutionWalls(player);
 };
 
 // Call animate()
