@@ -13,12 +13,13 @@ window.addEventListener("resize", () => {
 });
 
 class sprite {
-	constructor(x, y, width, height, speed, color) {
+	constructor(x, y, width, height, speedX, speedY, color) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.speed = speed;
+		this.speedX = speedX;
+		this.speedY = speedY;
 		this.color = color;
 	}
 	createSprite() {
@@ -44,30 +45,60 @@ let playerY;
 let playerColor;
 
 const init = () => {
-	gameAreaX = window.innerWidth / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
-	gameAreaY = window.innerHeight / 2 - Math.min(window.innerHeight, window.innerWidth) * 0.8 / 2;
+	gameAreaX =
+		window.innerWidth / 2 -
+		(Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
+	gameAreaY =
+		window.innerHeight / 2 -
+		(Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
 	gameAreaWidth = Math.min(window.innerHeight, window.innerWidth) * 0.8;
 	gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-	gameAreaColor = '#111111';
+	gameAreaColor = "#111111";
 
 	playerWidth = gameAreaWidth / 16;
 	playerHeight = gameAreaHeight / 16;
 	playerX = gameAreaX + gameAreaWidth / 2;
 	playerY = gameAreaY + gameAreaHeight / 2;
-	playerColor = '#FFFF00';
+	playerColor = "#FFFF00";
 
-	gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, gameAreaColor);
-	player = new sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, playerColor);
+	gameArea = new sprite(
+		gameAreaX,
+		gameAreaY,
+		gameAreaWidth,
+		gameAreaHeight,
+		0,
+		0,
+		gameAreaColor
+	);
+	player = new sprite(
+		playerX,
+		playerY,
+		playerWidth,
+		playerHeight,
+		(playerWidth + playerHeight) / 2,
+		(playerWidth + playerHeight) / 2,
+		playerColor
+	);
 
 	foodArray = [];
 	for (let i = 0; i < 10; i++) {
-		let foodWidth = 10;
-		let foodHeight = 10;
-		let randomX = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1) + playerWidth/2 - foodWidth/2;
-		let randomY = gameAreaY + playerHeight * (getRandomInt(1, 16) - 1) + playerHeight/2 - foodHeight/2;
-		let foodColor = 'white';
-		
-		foodArray.push(new sprite(randomX, randomY, foodWidth, foodHeight, 0, foodColor));
+		let foodWidth = playerWidth / 4;
+		let foodHeight = playerWidth / 4;
+		let randomX =
+			gameAreaX +
+			playerWidth * (getRandomInt(1, 16) - 1) +
+			playerWidth / 2 -
+			foodWidth / 2;
+		let randomY =
+			gameAreaY +
+			playerHeight * (getRandomInt(1, 16) - 1) +
+			playerHeight / 2 -
+			foodHeight / 2;
+		let foodColor = "white";
+
+		foodArray.push(
+			new sprite(randomX, randomY, foodWidth, foodHeight, 0, 0, foodColor)
+		);
 	}
 };
 
@@ -78,38 +109,53 @@ init();
 // On keydown simultaneously check if player is colliding with the wall or not
 // if not then only add the speed to player's position
 window.addEventListener("keydown", (e) => {
-	if (e.key == "d" && !isCollidingWithWall(player, 'right')) {
-		player.x += player.speed;
-	}
-	else if (e.key == "s" && !isCollidingWithWall(player, 'bottom')) {
-		player.y += player.speed;
-	}
-	else if (e.key == "a" && !isCollidingWithWall(player, 'left')) {
-		player.x -= player.speed;
-	}
-	else if (e.key == "w" && !isCollidingWithWall(player, 'top')) {
-		player.y -= player.speed;
+	if (e.key == "d" && !isCollidingWithWall(player, "right")) {
+		player.x += player.speedX;
+	} else if (e.key == "s" && !isCollidingWithWall(player, "bottom")) {
+		player.y += player.speedY;
+	} else if (e.key == "a" && !isCollidingWithWall(player, "left")) {
+		player.x -= player.speedX;
+	} else if (e.key == "w" && !isCollidingWithWall(player, "top")) {
+		player.y -= player.speedY;
 	}
 });
 
 // Collision Detection with walls
 // Added 1px for correction - Not pixel perfect
 const isCollidingWithWall = (sprite, wall) => {
-	if (wall === 'right') {
+	if (wall === "right") {
 		if (sprite.x + 1 >= gameArea.x + gameArea.width - sprite.width) return true;
-	}
-	else if (wall === 'bottom') {
-		if (sprite.y + 1 >= gameArea.y + gameArea.height - sprite.height) return true;
-	}
-	else if (wall === 'left') {
+	} else if (wall === "bottom") {
+		if (sprite.y + 1 >= gameArea.y + gameArea.height - sprite.height)
+			return true;
+	} else if (wall === "left") {
 		if (sprite.x <= gameArea.x + 1) return true;
-	}
-	else if (wall === 'top') {
+	} else if (wall === "top") {
 		if (sprite.y <= gameArea.y + 1) return true;
 	}
 	return false;
-}
+};
 
+// Collision detection with food
+const isCollidingWithFood = (sprite, food) => {
+	if (
+		sprite.x <= food.x &&
+		sprite.x + playerWidth >= food.x &&
+		sprite.y <= food.y &&
+		sprite.y + playerHeight >= food.y
+	)
+		return true;
+	return false;
+};
+
+// Remove food after collision
+const foodCollisionResolution = () => {
+	// Loop to remove food eaten
+	foodArray.forEach((food) => {
+		let index = foodArray.indexOf(food); // index of the food in foodArray
+		isCollidingWithFood(player, food) ? foodArray.splice(index, 1) : true; // remove food from foodArray
+	});
+};
 
 // Animate function
 const animate = () => {
@@ -117,11 +163,12 @@ const animate = () => {
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
 	gameArea.createSprite();
 	player.createSprite();
-	foodArray.forEach(food => {
+	foodArray.forEach((food) => {
 		food.createSprite();
 	});
-};
 
+	foodCollisionResolution();
+};
 // Call animate()
 animate();
 
