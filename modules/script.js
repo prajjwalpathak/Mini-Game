@@ -1,3 +1,5 @@
+import { getRandomInt } from "./utils.js";
+
 const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -27,6 +29,7 @@ class sprite {
 
 let gameArea;
 let player;
+let foodArray = [];
 
 let gameAreaX;
 let gameAreaY;
@@ -55,8 +58,17 @@ const init = () => {
 
 	gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, gameAreaColor);
 	player = new sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, playerColor);
-	gameArea.createSprite();
-	player.createSprite();
+
+	foodArray = [];
+	for (let i = 0; i < 10; i++) {
+		let foodWidth = 10;
+		let foodHeight = 10;
+		let randomX = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1) + playerWidth/2 - foodWidth/2;
+		let randomY = gameAreaY + playerHeight * (getRandomInt(1, 16) - 1) + playerHeight/2 - foodHeight/2;
+		let foodColor = 'white';
+		
+		foodArray.push(new sprite(randomX, randomY, foodWidth, foodHeight, 0, foodColor));
+	}
 };
 
 // Call init()
@@ -90,7 +102,7 @@ const isCollidingWithWall = (sprite, wall) => {
 		if (sprite.y + 1 >= gameArea.y + gameArea.height - sprite.height) return true;
 	}
 	else if (wall === 'left') {
-		if (sprite.x <= gameArea.x + 1) return true; 
+		if (sprite.x <= gameArea.x + 1) return true;
 	}
 	else if (wall === 'top') {
 		if (sprite.y <= gameArea.y + 1) return true;
@@ -105,6 +117,9 @@ const animate = () => {
 	c.clearRect(0, 0, window.innerWidth, window.innerHeight);
 	gameArea.createSprite();
 	player.createSprite();
+	foodArray.forEach(food => {
+		food.createSprite();
+	});
 };
 
 // Call animate()
