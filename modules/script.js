@@ -34,16 +34,51 @@ let foodWidth;
 let foodHeight;
 
 // Time
-let clock = {
-    min: 0,
-    sec: 0,
-};
+let clock;
 
-// Interval Id for timer
-let time = 60;
-let intervalId;
+class Clock {
+    clock = {
+        min: undefined,
+        sec: undefined,
+    };
+    intervalId;
+    constructor(x, y, fontSize, font, color, strokeColor, time) {
+        this.x = x;
+        this.y = y;
+        this.fontSize = fontSize;
+        this.font = font;
+        this.color = color;
+        this.strokeColor = strokeColor;
+        this.time = time;
+    }
+    createClock(clockTime) {
+        c.font = "50px serif";
+        c.fillText("Hello world", 90, 90);
+        // c.font = `${this.fontSize}px ${this.font}`;
+        // c.fillStyle = this.color;
+        // c.fillText(clockTime, this.x, this.y);
+        // c.strokeStyle = this.strokeColor;
+        // c.strokeText(clockTime, this.x, this.y);
+    }
+    startTimer() {
+        this.intervalId = setInterval(() => {
+            this.clock.min = secToClock(this.time).minutes;
+            this.clock.sec = secToClock(this.time).seconds;
+            let formattedMinutes = String(this.clock.min).padStart(2, "0");
+            let formattedSeconds = String(this.clock.sec).padStart(2, "0");
+            this.createClock(`${formattedMinutes}:${formattedSeconds}`);
+            this.time -= 1;
+        }, 1000);
+        this.stopTimer();
+    }
+    stopTimer() {
+        setTimeout(() => {
+            clearInterval(intervalId);
+        }, 60000);
+    }
+}
 
-class sprite {
+class Sprite {
     constructor(x, y, width, height, speedX, speedY, color) {
         this.x = x;
         this.y = y;
@@ -58,26 +93,6 @@ class sprite {
         c.fillRect(this.x, this.y, this.width, this.height);
     }
 }
-
-// Clear the interval Id for timer
-const stopTimer = () => {
-    setTimeout(() => {
-        clearInterval(intervalId);
-    }, 60000);
-};
-
-// Countdown Timer
-const startTimer = () => {
-    intervalId = setInterval(() => {
-        time -= 1;
-        clock.min = secToClock(time).minutes;
-        clock.sec = secToClock(time).seconds;
-        let formattedMinutes = String(clock.min).padStart(2, "0");
-        let formattedSeconds = String(clock.sec).padStart(2, "0");
-        console.log(`${formattedMinutes}:${formattedSeconds}`);
-    }, 1000);
-    stopTimer();
-};
 
 // Check if position inside game area
 const insideGameArea = (x, y) => {
@@ -113,8 +128,8 @@ const init = () => {
     playerY = gameAreaY + gameAreaHeight / 2;
     playerColor = "#FFFF00";
 
-    gameArea = new sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, 0, gameAreaColor);
-    player = new sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, (playerWidth + playerHeight) / 2, playerColor);
+    gameArea = new Sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, 0, gameAreaColor);
+    player = new Sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, (playerWidth + playerHeight) / 2, playerColor);
 
     foodArray = [];
     for (let i = 0; i < 20; i++) {
@@ -123,8 +138,12 @@ const init = () => {
         let randomPos = randomFoodPosition();
         let foodColor = "white";
 
-        foodArray.push(new sprite(randomPos.x, randomPos.y, foodWidth, foodHeight, 0, 0, foodColor));
+        foodArray.push(new Sprite(randomPos.x, randomPos.y, foodWidth, foodHeight, 0, 0, foodColor));
     }
+    clock = new Clock(100, 100, 30, "Arial", "blue", "black", 60);
+    clock.startTimer();
+
+    // startTimer();
 };
 
 // Call init()
@@ -134,15 +153,10 @@ init();
 // On keydown simultaneously check if player is colliding with the wall or not
 // if not then only add the speed to player's position
 window.addEventListener("keydown", (e) => {
-    if (e.key == "d" && !isCollidingWithWall(player, "right")) {
-        player.x += player.speedX;
-    } else if (e.key == "s" && !isCollidingWithWall(player, "bottom")) {
-        player.y += player.speedY;
-    } else if (e.key == "a" && !isCollidingWithWall(player, "left")) {
-        player.x -= player.speedX;
-    } else if (e.key == "w" && !isCollidingWithWall(player, "top")) {
-        player.y -= player.speedY;
-    }
+    if ((e.key == "d" || e.key == "ArrowRight") && !isCollidingWithWall(player, "right")) player.x += player.speedX;
+    else if ((e.key == "s" || e.key == "ArrowDown") && !isCollidingWithWall(player, "bottom")) player.y += player.speedY;
+    else if ((e.key == "a" || e.key == "ArrowLeft") && !isCollidingWithWall(player, "left")) player.x -= player.speedX;
+    else if ((e.key == "w" || e.key == "ArrowUp") && !isCollidingWithWall(player, "top")) player.y -= player.speedY;
 });
 
 // Collision Detection with walls
