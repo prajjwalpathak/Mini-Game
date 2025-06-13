@@ -1,7 +1,7 @@
 import { getRandomInt, secToClock } from "./utils.js";
 
 const canvas = document.querySelector("canvas");
-const c = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -35,13 +35,18 @@ let foodHeight;
 
 // Time
 let clock;
+let intervalId;
+let time = {
+    min: undefined,
+    sec: undefined,
+};
 
 class Clock {
     clock = {
         min: undefined,
         sec: undefined,
     };
-    intervalId;
+
     constructor(x, y, fontSize, font, color, strokeColor, time) {
         this.x = x;
         this.y = y;
@@ -51,30 +56,32 @@ class Clock {
         this.strokeColor = strokeColor;
         this.time = time;
     }
+
     createClock(clockTime) {
-        c.font = "50px serif";
-        c.fillText("Hello world", 90, 90);
-        // c.font = `${this.fontSize}px ${this.font}`;
-        // c.fillStyle = this.color;
-        // c.fillText(clockTime, this.x, this.y);
-        // c.strokeStyle = this.strokeColor;
-        // c.strokeText(clockTime, this.x, this.y);
+        ctx.font = `${this.fontSize}px ${this.font}`;
+        ctx.fillStyle = this.color;
+        ctx.fillText(clockTime, this.x, this.y);
+        ctx.strokeStyle = this.strokeColor;
+        ctx.strokeText(clockTime, this.x, this.y);
     }
+
     startTimer() {
-        this.intervalId = setInterval(() => {
+        intervalId = setInterval(() => {
+            this.time -= 1;
             this.clock.min = secToClock(this.time).minutes;
             this.clock.sec = secToClock(this.time).seconds;
             let formattedMinutes = String(this.clock.min).padStart(2, "0");
             let formattedSeconds = String(this.clock.sec).padStart(2, "0");
-            this.createClock(`${formattedMinutes}:${formattedSeconds}`);
-            this.time -= 1;
+            time.min = formattedMinutes;
+            time.sec = formattedSeconds;
         }, 1000);
         this.stopTimer();
     }
+
     stopTimer() {
         setTimeout(() => {
             clearInterval(intervalId);
-        }, 60000);
+        }, this.time * 1000);
     }
 }
 
@@ -88,9 +95,10 @@ class Sprite {
         this.speedY = speedY;
         this.color = color;
     }
+
     createSprite() {
-        c.fillStyle = this.color;
-        c.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -104,6 +112,7 @@ const outsidePlayerRange = (x, y) => {
     if ((x < player.x || x > player.x + playerWidth) && (y < player.y || y > player.y + playerHeight)) return true;
 };
 
+// Generate random food positions
 const randomFoodPosition = () => {
     let pos = { x: undefined, y: undefined };
     pos.x = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1) + playerWidth / 2 - foodWidth / 2;
@@ -116,6 +125,14 @@ const randomFoodPosition = () => {
 };
 
 const init = () => {
+    // Time reset
+    clearInterval(intervalId);
+    time = {
+        min: "00",
+        sec: "30",
+    };
+
+    // Initialize everything
     gameAreaX = window.innerWidth / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
     gameAreaY = window.innerHeight / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
     gameAreaWidth = Math.min(window.innerHeight, window.innerWidth) * 0.8;
@@ -140,10 +157,10 @@ const init = () => {
 
         foodArray.push(new Sprite(randomPos.x, randomPos.y, foodWidth, foodHeight, 0, 0, foodColor));
     }
-    clock = new Clock(100, 100, 30, "Arial", "blue", "black", 60);
-    clock.startTimer();
 
-    // startTimer();
+    // Create clock and start timer
+    clock = new Clock(gameAreaX, gameAreaY - gameAreaWidth / 32, gameAreaWidth / 16, "Helvetica", "green", "green", 30);
+    clock.startTimer();
 };
 
 // Call init()
@@ -192,7 +209,8 @@ const foodCollisionResolution = () => {
 // Animate function
 const animate = () => {
     requestAnimationFrame(animate);
-    c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
     gameArea.createSprite();
     player.createSprite();
     foodArray.forEach((food) => {
@@ -200,6 +218,7 @@ const animate = () => {
     });
 
     foodCollisionResolution();
+    clock.createClock(`${time.min}:${time.sec}`);
 };
 // Call animate()
 animate();
