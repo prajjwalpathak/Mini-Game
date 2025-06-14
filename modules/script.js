@@ -124,6 +124,15 @@ const randomFoodPosition = () => {
     return pos;
 };
 
+// Pause Game
+const pauseGame = () => {
+    clearInterval(intervalId);
+};
+// Resume Game
+const resumeGame = () => {
+    clock.startTimer();
+}
+
 const init = () => {
     // Time reset
     clearInterval(intervalId);
