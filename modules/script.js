@@ -41,6 +41,11 @@ let time = {
     sec: undefined,
 };
 
+// Buttons
+let startButton;
+let pauseButton;
+let resumeButton;
+
 class Clock {
     clock = {
         min: undefined,
@@ -102,6 +107,25 @@ class Sprite {
     }
 }
 
+class Button {
+    constructor(x, y, width, height, color, text) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.color = color;
+        this.text = text;
+    }
+    createButton() {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        ctx.font = `bold ${this.height / 2}px Helvetica`;
+        ctx.fillStyle = "black";
+        ctx.fillText(this.text, this.x + this.width / 7, this.y + this.height / 1.5);
+    }
+}
+
 // Check if position inside game area
 const insideGameArea = (x, y) => {
     if ((x > gameArea.x || x < gameArea.x + gameAreaWidth) && (y > gameArea.y || y < gameArea.y + gameAreaHeight)) return true;
@@ -127,11 +151,15 @@ const randomFoodPosition = () => {
 // Pause Game
 const pauseGame = () => {
     clearInterval(intervalId);
+    player.speedX = 0;
+    player.speedY = 0;
 };
 // Resume Game
 const resumeGame = () => {
     clock.startTimer();
-}
+    player.speedX = (playerWidth + playerHeight) / 2;
+    player.speedY = (playerWidth + playerHeight) / 2;
+};
 
 const init = () => {
     // Time reset
@@ -169,7 +197,16 @@ const init = () => {
 
     // Create clock and start timer
     clock = new Clock(gameAreaX, gameAreaY - gameAreaWidth / 32, gameAreaWidth / 16, "Helvetica", "green", "green", 30);
-    clock.startTimer();
+    // clock.startTimer();
+
+    // Start Game Button
+    startButton = new Button(gameAreaX + gameAreaWidth / 2 - playerWidth, gameAreaY + gameAreaHeight + canvas.height / 64, playerWidth * 2, playerHeight, "#7EBCF2", "Start");
+
+    // Pause Game Button
+    pauseButton = new Button(gameAreaX, gameAreaY + gameAreaHeight + canvas.height / 64, playerWidth * 2, playerHeight, "#7EBCF2", "Pause");
+
+    // Resume Game Button
+    resumeButton = new Button(gameAreaX + gameAreaWidth / 6, gameAreaY + gameAreaHeight + canvas.height / 64, playerWidth * 2.8, playerHeight, "#7EBCF2", "Resume");
 };
 
 // Call init()
@@ -228,6 +265,9 @@ const animate = () => {
 
     foodCollisionResolution();
     clock.createClock(`${time.min}:${time.sec}`);
+    pauseButton.createButton();
+    resumeButton.createButton();
+    startButton.createButton();
 };
 // Call animate()
 animate();
