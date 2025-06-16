@@ -41,6 +41,9 @@ let time = {
     sec: undefined,
 };
 
+// Score
+let score;
+
 // Buttons
 let startButton;
 let pauseButton;
@@ -133,7 +136,7 @@ const insideGameArea = (x, y) => {
 
 // Check if position outside game area
 const outsidePlayerRange = (x, y) => {
-    if ((x < player.x || x > player.x + playerWidth) && (y < player.y || y > player.y + playerHeight)) return true;
+    if ((x < player.x || x > player.x + playerWidth) || (y < player.y || y > player.y + playerHeight)) return true;
 };
 
 // Generate random food positions
@@ -169,6 +172,9 @@ const init = () => {
         sec: "30",
     };
 
+    // Score reset
+    score = 0;
+
     // Initialize everything
     gameAreaX = window.innerWidth / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
     gameAreaY = window.innerHeight / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
@@ -178,8 +184,8 @@ const init = () => {
 
     playerWidth = gameAreaWidth / 16;
     playerHeight = gameAreaHeight / 16;
-    playerX = gameAreaX + gameAreaWidth / 2;
-    playerY = gameAreaY + gameAreaHeight / 2;
+    playerX = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1);
+    playerY = gameAreaY + playerHeight * (getRandomInt(1, 16) - 1);
     playerColor = "#FFFF00";
 
     gameArea = new Sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, 0, gameAreaColor);
@@ -239,7 +245,10 @@ const isCollidingWithWall = (sprite, wall) => {
 
 // Collision detection with food
 const isCollidingWithFood = (sprite, food) => {
-    if (sprite.x <= food.x && sprite.x + playerWidth >= food.x && sprite.y <= food.y && sprite.y + playerHeight >= food.y) return true;
+    if (sprite.x <= food.x && sprite.x + playerWidth >= food.x && sprite.y <= food.y && sprite.y + playerHeight >= food.y) {
+        score += 10;
+        return true;
+    }
     return false;
 };
 
@@ -250,6 +259,15 @@ const foodCollisionResolution = () => {
         let index = foodArray.indexOf(food); // index of the food in foodArray
         isCollidingWithFood(player, food) ? foodArray.splice(index, 1) : true; // remove food from foodArray
     });
+};
+
+// Display score
+const displayScore = () => {
+    ctx.font = `${gameAreaWidth / 16}px Helvetica`;
+    ctx.fillStyle = "black";
+    ctx.fillText(String(score).padStart(3, "0"), gameAreaX + gameAreaWidth / 5, gameAreaY - gameAreaWidth / 32);
+    ctx.strokeStyle = "black";
+    ctx.strokeText(String(score).padStart(3, "0"), gameAreaX + gameAreaWidth / 5, gameAreaY - gameAreaWidth / 32);
 };
 
 // Animate function
@@ -268,6 +286,7 @@ const animate = () => {
     pauseButton.createButton();
     resumeButton.createButton();
     startButton.createButton();
+    displayScore();
 };
 // Call animate()
 animate();
