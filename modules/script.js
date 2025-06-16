@@ -24,6 +24,8 @@ let gameAreaColor;
 let player;
 let playerWidth;
 let playerHeight;
+let playerRandomGridX;
+let playerRandomGridY;
 let playerX;
 let playerY;
 let playerColor;
@@ -136,17 +138,25 @@ const insideGameArea = (x, y) => {
 
 // Check if position outside game area
 const outsidePlayerRange = (x, y) => {
-    if ((x < player.x || x > player.x + playerWidth) || (y < player.y || y > player.y + playerHeight)) return true;
+    if (x < player.x || x > player.x + playerWidth || y < player.y || y > player.y + playerHeight) return true;
 };
 
 // Generate random food positions
-const randomFoodPosition = () => {
+const randomFoodPosition = (posX, posY) => {
     let pos = { x: undefined, y: undefined };
-    pos.x = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1) + playerWidth / 2 - foodWidth / 2;
-    pos.y = gameAreaY + playerHeight * (getRandomInt(1, 16) - 1) + playerHeight / 2 - foodHeight / 2;
-    while (!insideGameArea(pos.x, pos.y) && !outsidePlayerRange(pos.x, pos.y)) {
-        pos.x = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1) + playerWidth / 2 - foodWidth / 2;
-        pos.y = gameAreaY + playerHeight * (getRandomInt(1, 16) - 1) + playerHeight / 2 - foodHeight / 2;
+    let foodRandomGridX = getRandomInt(0, 16);
+    let foodRandomGridY = getRandomInt(0, 16);
+    pos.x = gameAreaX + playerWidth * foodRandomGridX + playerWidth / 2 - foodWidth / 2;
+    pos.y = gameAreaY + playerHeight * foodRandomGridY + playerHeight / 2 - foodHeight / 2;
+
+    if (foodRandomGridX !== posX || foodRandomGridY !== posY) return pos;
+    else {
+        while (foodRandomGridX === posX && foodRandomGridY === posY) {
+            foodRandomGridX = getRandomInt(0, 16);
+            foodRandomGridY = getRandomInt(0, 16);
+            pos.x = gameAreaX + playerWidth * getRandomInt(0, 16) + playerWidth / 2 - foodWidth / 2;
+            pos.y = gameAreaY + playerHeight * getRandomInt(0, 16) + playerHeight / 2 - foodHeight / 2;
+        }
     }
     return pos;
 };
@@ -182,10 +192,12 @@ const init = () => {
     gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
     gameAreaColor = "#111111";
 
+    playerRandomGridX = getRandomInt(0, 16);
+    playerRandomGridY = getRandomInt(0, 16);
     playerWidth = gameAreaWidth / 16;
     playerHeight = gameAreaHeight / 16;
-    playerX = gameAreaX + playerWidth * (getRandomInt(1, 16) - 1);
-    playerY = gameAreaY + playerHeight * (getRandomInt(1, 16) - 1);
+    playerX = gameAreaX + playerWidth * playerRandomGridX;
+    playerY = gameAreaY + playerHeight * playerRandomGridY;
     playerColor = "#FFFF00";
 
     gameArea = new Sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, 0, gameAreaColor);
@@ -195,7 +207,7 @@ const init = () => {
     for (let i = 0; i < 20; i++) {
         foodWidth = playerWidth / 4;
         foodHeight = playerWidth / 4;
-        let randomPos = randomFoodPosition();
+        let randomPos = randomFoodPosition(playerRandomGridX, playerRandomGridY);
         let foodColor = "white";
 
         foodArray.push(new Sprite(randomPos.x, randomPos.y, foodWidth, foodHeight, 0, 0, foodColor));
