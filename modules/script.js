@@ -1,4 +1,4 @@
-import { getRandomInt, secToClock } from "./utils.js";
+import { getRandomInt, secToClock, insideArea } from "./utils.js";
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
@@ -42,14 +42,38 @@ let time = {
     min: undefined,
     sec: undefined,
 };
+let startFlag = false;
+let pauseFlag = false;
 
 // Score
 let score;
 
 // Buttons
+const slotX = () => window.innerWidth / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
+const slotY = () => window.innerHeight / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2 + Math.min(window.innerHeight, window.innerWidth) * 0.8 + canvas.height / 64;
+const buttonHeight = () => (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 16;
+const buttonWidth = () => buttonHeight() * 4;
 let startButton;
 let pauseButton;
 let resumeButton;
+let slot1 = {
+    x: undefined,
+    y: undefined,
+};
+let slot2 = {
+    x: undefined,
+    y: undefined,
+};
+let slot3 = {
+    x: undefined,
+    y: undefined,
+};
+
+// Mouse
+let mouse = {
+    x: undefined,
+    y: undefined,
+};
 
 class Clock {
     clock = {
@@ -113,33 +137,32 @@ class Sprite {
 }
 
 class Button {
-    constructor(x, y, width, height, color, text) {
+    width = buttonWidth();
+    height = buttonHeight();
+    constructor(x, y, text) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
-        this.color = color;
         this.text = text;
     }
     createButton() {
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = "White";
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
         ctx.font = `bold ${this.height / 2}px Helvetica`;
         ctx.fillStyle = "black";
-        ctx.fillText(this.text, this.x + this.width / 7, this.y + this.height / 1.5);
+        ctx.fillText(this.text, this.x + this.height / 2, this.y + this.height / 1.5);
     }
 }
 
-// Check if position inside game area
-const insideGameArea = (x, y) => {
-    if ((x > gameArea.x || x < gameArea.x + gameAreaWidth) && (y > gameArea.y || y < gameArea.y + gameAreaHeight)) return true;
-};
+// // Check if position inside game area
+// const insideGameArea = (x, y) => {
+//     if ((x > gameArea.x || x < gameArea.x + gameAreaWidth) && (y > gameArea.y || y < gameArea.y + gameAreaHeight)) return true;
+// };
 
-// Check if position outside game area
-const outsidePlayerRange = (x, y) => {
-    if (x < player.x || x > player.x + playerWidth || y < player.y || y > player.y + playerHeight) return true;
-};
+// // Check if position outside game area
+// const outsidePlayerRange = (x, y) => {
+//     if (x < player.x || x > player.x + playerWidth || y < player.y || y > player.y + playerHeight) return true;
+// };
 
 // Generate random food positions
 const randomFoodPosition = (posX, posY) => {
@@ -161,17 +184,29 @@ const randomFoodPosition = (posX, posY) => {
     return pos;
 };
 
+// Start Game
+const startGame = () => {
+    if (!startFlag) {
+        clock.startTimer();
+        startFlag = true;
+    }
+};
+
 // Pause Game
 const pauseGame = () => {
     clearInterval(intervalId);
     player.speedX = 0;
     player.speedY = 0;
+    pauseFlag = true;
 };
 // Resume Game
 const resumeGame = () => {
-    clock.startTimer();
-    player.speedX = (playerWidth + playerHeight) / 2;
-    player.speedY = (playerWidth + playerHeight) / 2;
+    if (pauseFlag) {
+        clock.startTimer();
+        player.speedX = (playerWidth + playerHeight) / 2;
+        player.speedY = (playerWidth + playerHeight) / 2;
+        pauseFlag = false;
+    }
 };
 
 const init = () => {
@@ -213,18 +248,30 @@ const init = () => {
         foodArray.push(new Sprite(randomPos.x, randomPos.y, foodWidth, foodHeight, 0, 0, foodColor));
     }
 
+    slot1 = {
+        x: slotX(),
+        y: slotY(),
+    };
+    slot2 = {
+        x: slotX() + buttonWidth() + buttonHeight(),
+        y: slotY(),
+    };
+    slot3 = {
+        x: slotX() + buttonWidth() * 2 + buttonHeight() * 2,
+        y: slotY(),
+    };
+
     // Create clock and start timer
     clock = new Clock(gameAreaX, gameAreaY - gameAreaWidth / 32, gameAreaWidth / 16, "Helvetica", "green", "green", 30);
-    // clock.startTimer();
 
     // Start Game Button
-    startButton = new Button(gameAreaX + gameAreaWidth / 2 - playerWidth, gameAreaY + gameAreaHeight + canvas.height / 64, playerWidth * 2, playerHeight, "#7EBCF2", "Start");
+    startButton = new Button(slot1.x, slot1.y, "Start");
 
     // Pause Game Button
-    pauseButton = new Button(gameAreaX, gameAreaY + gameAreaHeight + canvas.height / 64, playerWidth * 2, playerHeight, "#7EBCF2", "Pause");
+    pauseButton = new Button(slot2.x, slot2.y, "Pause");
 
     // Resume Game Button
-    resumeButton = new Button(gameAreaX + gameAreaWidth / 6, gameAreaY + gameAreaHeight + canvas.height / 64, playerWidth * 2.8, playerHeight, "#7EBCF2", "Resume");
+    resumeButton = new Button(slot3.x, slot3.y, "Resume");
 };
 
 // Call init()
@@ -238,6 +285,12 @@ window.addEventListener("keydown", (e) => {
     else if ((e.key == "s" || e.key == "ArrowDown") && !isCollidingWithWall(player, "bottom")) player.y += player.speedY;
     else if ((e.key == "a" || e.key == "ArrowLeft") && !isCollidingWithWall(player, "left")) player.x -= player.speedX;
     else if ((e.key == "w" || e.key == "ArrowUp") && !isCollidingWithWall(player, "top")) player.y -= player.speedY;
+});
+
+window.addEventListener("click", (e) => {
+    if (insideArea(e.x, e.y, slot1.x, slot1.x + buttonWidth(), slot1.y, slot1.y + buttonHeight())) startGame();
+    else if (insideArea(e.x, e.y, slot2.x, slot2.x + buttonWidth(), slot2.y, slot2.y + buttonHeight())) pauseGame();
+    else if (insideArea(e.x, e.y, slot3.x, slot3.x + buttonWidth(), slot3.y, slot3.y + buttonHeight())) resumeGame();
 });
 
 // Collision Detection with walls
