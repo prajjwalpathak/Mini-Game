@@ -38,6 +38,7 @@ let foodHeight;
 // Time
 let clock;
 let intervalId;
+let timeOutId;
 let time = {
     min: undefined,
     sec: undefined,
@@ -65,12 +66,6 @@ let slot2 = {
     y: undefined,
 };
 let slot3 = {
-    x: undefined,
-    y: undefined,
-};
-
-// Mouse
-let mouse = {
     x: undefined,
     y: undefined,
 };
@@ -108,12 +103,13 @@ class Clock {
             let formattedSeconds = String(this.clock.sec).padStart(2, "0");
             time.min = formattedMinutes;
             time.sec = formattedSeconds;
+            
         }, 1000);
         this.stopTimer();
     }
 
     stopTimer() {
-        setTimeout(() => {
+        timeOutId = setTimeout(() => {
             clearInterval(intervalId);
         }, this.time * 1000);
     }
@@ -195,6 +191,7 @@ const startGame = () => {
 // Pause Game
 const pauseGame = () => {
     clearInterval(intervalId);
+    clearTimeout(timeOutId);
     player.speedX = 0;
     player.speedY = 0;
     pauseFlag = true;
@@ -287,7 +284,7 @@ window.addEventListener("keydown", (e) => {
     else if ((e.key == "w" || e.key == "ArrowUp") && !isCollidingWithWall(player, "top")) player.y -= player.speedY;
 });
 
-window.addEventListener("click", (e) => {
+window.addEventListener("click", (e) => {    
     if (insideArea(e.x, e.y, slot1.x, slot1.x + buttonWidth(), slot1.y, slot1.y + buttonHeight())) startGame();
     else if (insideArea(e.x, e.y, slot2.x, slot2.x + buttonWidth(), slot2.y, slot2.y + buttonHeight())) pauseGame();
     else if (insideArea(e.x, e.y, slot3.x, slot3.x + buttonWidth(), slot3.y, slot3.y + buttonHeight())) resumeGame();
