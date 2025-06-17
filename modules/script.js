@@ -13,6 +13,7 @@ window.addEventListener("resize", () => {
 });
 
 // Game Area
+let gameOver = false;
 let gameArea;
 let gameAreaX;
 let gameAreaY;
@@ -116,6 +117,7 @@ class Clock {
 
     stopTimer() {
         timeOutId = setTimeout(() => {
+            gameOver = true;
             clearInterval(intervalId);
         }, this.time * 1000);
     }
@@ -238,10 +240,13 @@ const showFinalScore = () => {
 
     ctx.font = `bold ${playerHeight / 1.5}px Helvetica`;
     ctx.fillStyle = "black";
-    ctx.fillText("Restart", dialogX + dialogWidth / 3.6, dialogY + dialogHeight / 1.25);
+    ctx.fillText("Restart", slot4.x + playerHeight / 4, slot4.y + playerHeight / 1.5);
 };
 
 const init = () => {
+    // Reset Game
+    gameOver = false;
+
     // Time reset
     clearInterval(intervalId);
     time = {
@@ -323,6 +328,7 @@ window.addEventListener("click", (e) => {
     if (insideArea(e.x, e.y, slot1.x, slot1.x + buttonWidth(), slot1.y, slot1.y + buttonHeight())) startGame();
     else if (insideArea(e.x, e.y, slot2.x, slot2.x + buttonWidth(), slot2.y, slot2.y + buttonHeight())) pauseGame();
     else if (insideArea(e.x, e.y, slot3.x, slot3.x + buttonWidth(), slot3.y, slot3.y + buttonHeight())) resumeGame();
+    else if (insideArea(e.x, e.y, slot4.x, slot4.x + slot4.width, slot4.y, slot4.y + slot4.height)) init();
 });
 
 // Collision Detection with walls
@@ -384,7 +390,7 @@ const animate = () => {
     resumeButton.createButton();
     startButton.createButton();
     displayScore();
-    showFinalScore();
+    if(gameOver) showFinalScore();
 };
 // Call animate()
 animate();
