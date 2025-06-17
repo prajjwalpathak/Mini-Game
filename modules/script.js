@@ -57,6 +57,7 @@ const buttonWidth = () => buttonHeight() * 4;
 let startButton;
 let pauseButton;
 let resumeButton;
+let restartButton;
 let slot1 = {
     x: undefined,
     y: undefined,
@@ -68,6 +69,12 @@ let slot2 = {
 let slot3 = {
     x: undefined,
     y: undefined,
+};
+let slot4 = {
+    x: undefined,
+    y: undefined,
+    width: undefined,
+    height: undefined,
 };
 
 class Clock {
@@ -103,7 +110,6 @@ class Clock {
             let formattedSeconds = String(this.clock.sec).padStart(2, "0");
             time.min = formattedMinutes;
             time.sec = formattedSeconds;
-            
         }, 1000);
         this.stopTimer();
     }
@@ -206,6 +212,35 @@ const resumeGame = () => {
     }
 };
 
+const showFinalScore = () => {
+    let dialogX = gameAreaX + gameAreaWidth / 4;
+    let dialogY = gameAreaY + gameAreaHeight / 4;
+    let dialogWidth = gameAreaWidth / 2;
+    let dialogHeight = gameAreaHeight / 3;
+    slot4 = {
+        x: dialogX + dialogWidth / 4,
+        y: dialogY + dialogHeight / 1.5,
+        width: playerHeight * 4,
+        height: playerHeight,
+    };
+
+    ctx.fillStyle = "gray";
+    ctx.fillRect(dialogX, dialogY, dialogWidth, dialogHeight);
+
+    ctx.font = `${dialogWidth / 6}px Helvetica`;
+    ctx.fillStyle = "black";
+    ctx.fillText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
+    ctx.strokeStyle = "black";
+    ctx.strokeText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
+
+    ctx.fillStyle = "White";
+    ctx.fillRect(slot4.x, slot4.y, slot4.width, slot4.height);
+
+    ctx.font = `bold ${playerHeight / 1.5}px Helvetica`;
+    ctx.fillStyle = "black";
+    ctx.fillText("Restart", dialogX + dialogWidth / 3.6, dialogY + dialogHeight / 1.25);
+};
+
 const init = () => {
     // Time reset
     clearInterval(intervalId);
@@ -284,7 +319,7 @@ window.addEventListener("keydown", (e) => {
     else if ((e.key == "w" || e.key == "ArrowUp") && !isCollidingWithWall(player, "top")) player.y -= player.speedY;
 });
 
-window.addEventListener("click", (e) => {    
+window.addEventListener("click", (e) => {
     if (insideArea(e.x, e.y, slot1.x, slot1.x + buttonWidth(), slot1.y, slot1.y + buttonHeight())) startGame();
     else if (insideArea(e.x, e.y, slot2.x, slot2.x + buttonWidth(), slot2.y, slot2.y + buttonHeight())) pauseGame();
     else if (insideArea(e.x, e.y, slot3.x, slot3.x + buttonWidth(), slot3.y, slot3.y + buttonHeight())) resumeGame();
@@ -349,6 +384,7 @@ const animate = () => {
     resumeButton.createButton();
     startButton.createButton();
     displayScore();
+    showFinalScore();
 };
 // Call animate()
 animate();
