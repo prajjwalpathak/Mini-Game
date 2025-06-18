@@ -1,5 +1,9 @@
 import { getRandomInt, secToClock, insideArea } from "./utils.js";
 
+const foodAudio = document.getElementById("food-audio");
+const gameStartAudio = document.getElementById("game-start-audio");
+const gameOverAudio = document.getElementById("game-over-audio");
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -47,6 +51,8 @@ let time = {
 };
 let startFlag = false;
 let pauseFlag = false;
+let playGameOverAudio = true;
+let audioTimeOut;
 
 // Score
 let score;
@@ -192,6 +198,7 @@ const randomFoodPosition = (posX, posY) => {
 // Start Game
 const startGame = () => {
     if (!startFlag) {
+        gameStartAudio.play();
         clock.startTimer();
         startFlag = true;
         playerMove = true;
@@ -200,11 +207,14 @@ const startGame = () => {
 
 // Pause Game
 const pauseGame = () => {
-    clearInterval(intervalId);
-    clearTimeout(timeOutId);
-    player.speedX = 0;
-    player.speedY = 0;
-    pauseFlag = true;
+    if (startFlag) {
+        clearInterval(intervalId);
+        clearTimeout(timeOutId);
+        player.speedX = 0;
+        player.speedY = 0;
+        pauseFlag = true;
+        playerMove = false;
+    }
 };
 // Resume Game
 const resumeGame = () => {
@@ -213,43 +223,17 @@ const resumeGame = () => {
         player.speedX = (playerWidth + playerHeight) / 2;
         player.speedY = (playerWidth + playerHeight) / 2;
         pauseFlag = false;
+        playerMove = true;
     }
-};
-
-const showFinalScore = () => {
-    pauseGame();
-    let dialogX = gameAreaX + gameAreaWidth / 4;
-    let dialogY = gameAreaY + gameAreaHeight / 4;
-    let dialogWidth = gameAreaWidth / 2;
-    let dialogHeight = gameAreaHeight / 3;
-    slot4 = {
-        x: dialogX + dialogWidth / 4,
-        y: dialogY + dialogHeight / 1.5,
-        width: playerHeight * 4,
-        height: playerHeight,
-    };
-
-    ctx.fillStyle = "gray";
-    ctx.fillRect(dialogX, dialogY, dialogWidth, dialogHeight);
-
-    ctx.font = `${dialogWidth / 6}px Helvetica`;
-    ctx.fillStyle = "black";
-    ctx.fillText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
-    ctx.strokeStyle = "black";
-    ctx.strokeText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
-
-    ctx.fillStyle = "White";
-    ctx.fillRect(slot4.x, slot4.y, slot4.width, slot4.height);
-
-    ctx.font = `bold ${playerHeight / 1.5}px Helvetica`;
-    ctx.fillStyle = "black";
-    ctx.fillText("Restart", slot4.x + playerHeight / 4, slot4.y + playerHeight / 1.5);
 };
 
 const init = () => {
     // Reset Game
+    startFlag = false;
     gameOver = false;
     playerMove = false;
+    pauseFlag = false;
+    playGameOverAudio = true;
 
     // Time reset
     clearInterval(intervalId);
@@ -257,6 +241,7 @@ const init = () => {
         min: "00",
         sec: "30",
     };
+    clearTimeout(audioTimeOut);
 
     // Score reset
     score = 0;
@@ -353,6 +338,10 @@ const isCollidingWithWall = (sprite, wall) => {
 // Collision detection with food
 const isCollidingWithFood = (sprite, food) => {
     if (sprite.x <= food.x && sprite.x + playerWidth >= food.x && sprite.y <= food.y && sprite.y + playerHeight >= food.y) {
+        let foodSoundClone = foodAudio.cloneNode();
+        foodSoundClone.currentTime = 0;
+        foodSoundClone.play();
+        score += 10;
         return true;
     }
     return false;
@@ -363,7 +352,7 @@ const foodCollisionResolution = () => {
     // Loop to remove food eaten
     foodArray.forEach((food) => {
         let index = foodArray.indexOf(food); // index of the food in foodArray
-        isCollidingWithFood(player, food) ? (foodArray.splice(index, 1), (score += 10)) : true; // remove food from foodArray
+        isCollidingWithFood(player, food) ? foodArray.splice(index, 1) : true; // remove food from foodArray
     });
 };
 
@@ -374,6 +363,48 @@ const displayScore = () => {
     ctx.fillText(String(score).padStart(3, "0"), gameAreaX + gameAreaWidth / 5, gameAreaY - gameAreaWidth / 32);
     ctx.strokeStyle = "black";
     ctx.strokeText(String(score).padStart(3, "0"), gameAreaX + gameAreaWidth / 5, gameAreaY - gameAreaWidth / 32);
+};
+
+// Final score board
+const showFinalScore = () => {
+    if (playGameOverAudio) {
+        gameOverAudio.currentTime = 0;
+        gameOverAudio.play();
+    }
+
+    audioTimeOut = setTimeout(() => {
+        playGameOverAudio = false;
+    }, 1000);
+
+    // Stop everthing
+    pauseGame();
+
+    let dialogX = gameAreaX + gameAreaWidth / 4;
+    let dialogY = gameAreaY + gameAreaHeight / 4;
+    let dialogWidth = gameAreaWidth / 2;
+    let dialogHeight = gameAreaHeight / 3;
+    slot4 = {
+        x: dialogX + dialogWidth / 4,
+        y: dialogY + dialogHeight / 1.5,
+        width: playerHeight * 4,
+        height: playerHeight,
+    };
+
+    ctx.fillStyle = "gray";
+    ctx.fillRect(dialogX, dialogY, dialogWidth, dialogHeight);
+
+    ctx.font = `${dialogWidth / 6}px Helvetica`;
+    ctx.fillStyle = "black";
+    ctx.fillText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
+    ctx.strokeStyle = "black";
+    ctx.strokeText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
+
+    ctx.fillStyle = "White";
+    ctx.fillRect(slot4.x, slot4.y, slot4.width, slot4.height);
+
+    ctx.font = `bold ${playerHeight / 1.5}px Helvetica`;
+    ctx.fillStyle = "black";
+    ctx.fillText("Restart", slot4.x + playerHeight / 4, slot4.y + playerHeight / 1.5);
 };
 
 // Animate function
