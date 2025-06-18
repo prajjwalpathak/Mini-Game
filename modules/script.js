@@ -22,6 +22,7 @@ let gameAreaHeight;
 let gameAreaColor;
 
 // Player
+let playerMove = false;
 let player;
 let playerWidth;
 let playerHeight;
@@ -193,6 +194,7 @@ const startGame = () => {
     if (!startFlag) {
         clock.startTimer();
         startFlag = true;
+        playerMove = true;
     }
 };
 
@@ -215,6 +217,7 @@ const resumeGame = () => {
 };
 
 const showFinalScore = () => {
+    pauseGame();
     let dialogX = gameAreaX + gameAreaWidth / 4;
     let dialogY = gameAreaY + gameAreaHeight / 4;
     let dialogWidth = gameAreaWidth / 2;
@@ -246,6 +249,7 @@ const showFinalScore = () => {
 const init = () => {
     // Reset Game
     gameOver = false;
+    playerMove = false;
 
     // Time reset
     clearInterval(intervalId);
@@ -318,10 +322,10 @@ init();
 // On keydown simultaneously check if player is colliding with the wall or not
 // if not then only add the speed to player's position
 window.addEventListener("keydown", (e) => {
-    if ((e.key == "d" || e.key == "ArrowRight") && !isCollidingWithWall(player, "right")) player.x += player.speedX;
-    else if ((e.key == "s" || e.key == "ArrowDown") && !isCollidingWithWall(player, "bottom")) player.y += player.speedY;
-    else if ((e.key == "a" || e.key == "ArrowLeft") && !isCollidingWithWall(player, "left")) player.x -= player.speedX;
-    else if ((e.key == "w" || e.key == "ArrowUp") && !isCollidingWithWall(player, "top")) player.y -= player.speedY;
+    if ((e.key == "d" || e.key == "ArrowRight") && !isCollidingWithWall(player, "right") && playerMove) player.x += player.speedX;
+    else if ((e.key == "s" || e.key == "ArrowDown") && !isCollidingWithWall(player, "bottom") && playerMove) player.y += player.speedY;
+    else if ((e.key == "a" || e.key == "ArrowLeft") && !isCollidingWithWall(player, "left") && playerMove) player.x -= player.speedX;
+    else if ((e.key == "w" || e.key == "ArrowUp") && !isCollidingWithWall(player, "top") && playerMove) player.y -= player.speedY;
 });
 
 window.addEventListener("click", (e) => {
@@ -349,7 +353,6 @@ const isCollidingWithWall = (sprite, wall) => {
 // Collision detection with food
 const isCollidingWithFood = (sprite, food) => {
     if (sprite.x <= food.x && sprite.x + playerWidth >= food.x && sprite.y <= food.y && sprite.y + playerHeight >= food.y) {
-        score += 10;
         return true;
     }
     return false;
@@ -360,7 +363,7 @@ const foodCollisionResolution = () => {
     // Loop to remove food eaten
     foodArray.forEach((food) => {
         let index = foodArray.indexOf(food); // index of the food in foodArray
-        isCollidingWithFood(player, food) ? foodArray.splice(index, 1) : true; // remove food from foodArray
+        isCollidingWithFood(player, food) ? (foodArray.splice(index, 1), (score += 10)) : true; // remove food from foodArray
     });
 };
 
@@ -390,7 +393,7 @@ const animate = () => {
     resumeButton.createButton();
     startButton.createButton();
     displayScore();
-    if(gameOver) showFinalScore();
+    if (gameOver || score === 200) showFinalScore();
 };
 // Call animate()
 animate();
