@@ -202,6 +202,7 @@ const startGame = () => {
         clock.startTimer();
         startFlag = true;
         playerMove = true;
+        playGameOverAudio = true;
     }
 };
 
@@ -367,14 +368,11 @@ const displayScore = () => {
 
 // Final score board
 const showFinalScore = () => {
-    if (playGameOverAudio) {
-        gameOverAudio.currentTime = 0;
-        gameOverAudio.play();
-    }
+    if (playGameOverAudio) gameOverAudio.play();
 
     audioTimeOut = setTimeout(() => {
         playGameOverAudio = false;
-    }, 1000);
+    }, 900);
 
     // Stop everthing
     pauseGame();
