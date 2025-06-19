@@ -16,3 +16,10 @@ This is a mini-game built with HTML Canvas.
 <br>
 <h2>Phone</h2>
 <img width="200" alt="Phone" src="images/Phone.png">
+<br>
+<h2>To-Do:</h2>
+<ul>
+  <li>Support for touch controls.</li>
+  <li>Acceleration and friction for smooth movement.</li>
+</ul>
+
