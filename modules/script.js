@@ -61,7 +61,7 @@ let score;
 const slotX = () => window.innerWidth / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
 const slotY = () => window.innerHeight / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2 + Math.min(window.innerHeight, window.innerWidth) * 0.8 + canvas.height / 64;
 const buttonHeight = () => (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 16;
-const buttonWidth = () => buttonHeight() * 4;
+const buttonWidth = () => buttonHeight() * 3.2;
 let startButton;
 let pauseButton;
 let resumeButton;
@@ -156,12 +156,18 @@ class Button {
         this.text = text;
     }
     createButton() {
-        ctx.fillStyle = "White";
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        let fontSize = this.height / 1.6;
+        let fontX = this.x;
+        let fontY = this.y + this.height / 1.2;
 
-        ctx.font = `bold ${this.height / 2}px Helvetica`;
-        ctx.fillStyle = "black";
-        ctx.fillText(this.text, this.x + this.height / 2, this.y + this.height / 1.5);
+        ctx.font = `${fontSize}px "Press Start 2P"`;
+        ctx.fillStyle = "#F2F2F2";
+        ctx.fillText(this.text, fontX, fontY);
+        // ctx.strokeStyle = "#F2F2F2";
+        // ctx.strokeText(this.text, fontX, fontY);
+
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -252,7 +258,7 @@ const init = () => {
     gameAreaY = window.innerHeight / 2 - (Math.min(window.innerHeight, window.innerWidth) * 0.8) / 2;
     gameAreaWidth = Math.min(window.innerHeight, window.innerWidth) * 0.8;
     gameAreaHeight = Math.min(window.innerHeight, window.innerWidth) * 0.8;
-    gameAreaColor = "#111111";
+    gameAreaColor = "#011140";
 
     playerRandomGridX = getRandomInt(0, 16);
     playerRandomGridY = getRandomInt(0, 16);
@@ -260,7 +266,7 @@ const init = () => {
     playerHeight = gameAreaHeight / 16;
     playerX = gameAreaX + playerWidth * playerRandomGridX;
     playerY = gameAreaY + playerHeight * playerRandomGridY;
-    playerColor = "#FFFF00";
+    playerColor = "#4A5B8C";
 
     gameArea = new Sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, 0, gameAreaColor);
     player = new Sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, (playerWidth + playerHeight) / 2, playerColor);
@@ -270,7 +276,7 @@ const init = () => {
         foodWidth = playerWidth / 4;
         foodHeight = playerWidth / 4;
         let randomPos = randomFoodPosition(playerRandomGridX, playerRandomGridY);
-        let foodColor = "white";
+        let foodColor = "#F2F2F2";
 
         foodArray.push(new Sprite(randomPos.x, randomPos.y, foodWidth, foodHeight, 0, 0, foodColor));
     }
@@ -280,25 +286,25 @@ const init = () => {
         y: slotY(),
     };
     slot2 = {
-        x: slotX() + buttonWidth() + buttonHeight(),
+        x: slotX() + buttonWidth() * 1.5 + buttonHeight() * 1.5,
         y: slotY(),
     };
     slot3 = {
-        x: slotX() + buttonWidth() * 2 + buttonHeight() * 2,
+        x: slotX() + buttonWidth() * 3 + buttonHeight() * 2.7,
         y: slotY(),
     };
 
     // Create clock and start timer
-    clock = new Clock(gameAreaX, gameAreaY - gameAreaWidth / 32, gameAreaWidth / 16, "Helvetica", "green", "green", 30);
+    clock = new Clock(gameAreaX, gameAreaY - gameAreaWidth / 32, gameAreaWidth / 16, `"Press Start 2P"`, "#F2F2F2", "#F2F2F2", 30);
 
     // Start Game Button
-    startButton = new Button(slot1.x, slot1.y, "Start");
+    startButton = new Button(slot1.x, slot1.y, "START");
 
     // Pause Game Button
-    pauseButton = new Button(slot2.x, slot2.y, "Pause");
+    pauseButton = new Button(slot2.x, slot2.y, "PAUSE");
 
     // Resume Game Button
-    resumeButton = new Button(slot3.x, slot3.y, "Resume");
+    resumeButton = new Button(slot3.x, slot3.y, "RESUME");
 };
 
 // Call init()
@@ -359,11 +365,14 @@ const foodCollisionResolution = () => {
 
 // Display score
 const displayScore = () => {
-    ctx.font = `${gameAreaWidth / 16}px Helvetica`;
-    ctx.fillStyle = "black";
-    ctx.fillText(String(score).padStart(3, "0"), gameAreaX + gameAreaWidth / 5, gameAreaY - gameAreaWidth / 32);
-    ctx.strokeStyle = "black";
-    ctx.strokeText(String(score).padStart(3, "0"), gameAreaX + gameAreaWidth / 5, gameAreaY - gameAreaWidth / 32);
+    let fontSize = gameAreaWidth / 16;
+    let fontX = gameAreaX + gameAreaWidth - 3 * fontSize;
+    let fontY = gameAreaY - gameAreaWidth / 32;
+    ctx.font = `${fontSize}px "Press Start 2P"`;
+    ctx.fillStyle = "#F2F2F2";
+    ctx.fillText(String(score).padStart(3, "0"), fontX, fontY);
+    ctx.strokeStyle = "#F2F2F2";
+    ctx.strokeText(String(score).padStart(3, "0"), fontX, fontY);
 };
 
 // Final score board
@@ -374,7 +383,7 @@ const showFinalScore = () => {
         playGameOverAudio = false;
     }, 900);
 
-    // Stop everthing
+    // Stop everything
     pauseGame();
 
     let dialogX = gameAreaX + gameAreaWidth / 4;
@@ -388,21 +397,36 @@ const showFinalScore = () => {
         height: playerHeight,
     };
 
-    ctx.fillStyle = "gray";
+    let fontSize = dialogWidth / 12;
+    let fontX = dialogX + dialogHeight / 16;
+    let fontY = dialogY + dialogHeight / 3;
+
+    ctx.fillStyle = "#00010D";
     ctx.fillRect(dialogX, dialogY, dialogWidth, dialogHeight);
 
-    ctx.font = `${dialogWidth / 6}px Helvetica`;
-    ctx.fillStyle = "black";
-    ctx.fillText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
-    ctx.strokeStyle = "black";
-    ctx.strokeText(`Score: ${score}`, dialogX + dialogWidth / 8, dialogY + dialogHeight / 3);
+    ctx.font = `${fontSize}px "Press Start 2P"`;
+    ctx.fillStyle = "#F2F2F2";
+    ctx.fillText(`SCORE - ${score}`, fontX, fontY);
+    // ctx.strokeStyle = "#F2F2F2";
+    // ctx.strokeText(`SCORE: ${score}`, fontX, fontY);
 
-    ctx.fillStyle = "White";
-    ctx.fillRect(slot4.x, slot4.y, slot4.width, slot4.height);
+    // Restart Button
+    let buttonFontSize = playerHeight / 1.5;
+    let buttonFontX = slot4.x - playerHeight/6;
+    let buttonFontY = slot4.y + playerHeight / 1.2;
 
-    ctx.font = `bold ${playerHeight / 1.5}px Helvetica`;
-    ctx.fillStyle = "black";
-    ctx.fillText("Restart", slot4.x + playerHeight / 4, slot4.y + playerHeight / 1.5);
+    ctx.font = `${buttonFontSize}px "Press Start 2P"`;
+    ctx.fillStyle = "#F2F2F2";
+    ctx.fillText("RESTART", buttonFontX, buttonFontY);
+    // ctx.strokeStyle = "#F2F2F2";
+    // ctx.strokeText("RESTART", buttonFontX, buttonFontY);
+
+    // ctx.fillStyle = "blue";
+    // ctx.fillRect(slot4.x, slot4.y, slot4.width, slot4.height);
+
+    // ctx.font = `bold ${playerHeight / 1.5}px Helvetica`;
+    // ctx.fillStyle = "black";
+    // ctx.fillText("Restart", slot4.x + playerHeight / 4, slot4.y + playerHeight / 1.5);
 };
 
 // Animate function
