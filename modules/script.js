@@ -65,7 +65,7 @@ const buttonWidth = () => buttonHeight() * 3.2;
 let startButton;
 let pauseButton;
 let resumeButton;
-let restartButton;
+
 let slot1 = {
     x: undefined,
     y: undefined,
@@ -215,6 +215,8 @@ const startGame = () => {
 // Pause Game
 const pauseGame = () => {
     if (startFlag) {
+        gameStartAudio.currentTime = 0;
+        gameStartAudio.play();
         clearInterval(intervalId);
         clearTimeout(timeOutId);
         player.speedX = 0;
@@ -226,6 +228,8 @@ const pauseGame = () => {
 // Resume Game
 const resumeGame = () => {
     if (pauseFlag) {
+        gameStartAudio.currentTime = 0;
+        gameStartAudio.play();
         clock.startTimer();
         player.speedX = (playerWidth + playerHeight) / 2;
         player.speedY = (playerWidth + playerHeight) / 2;
@@ -244,11 +248,12 @@ const init = () => {
 
     // Time reset
     clearInterval(intervalId);
+    clearTimeout(timeOutId);
+    clearTimeout(audioTimeOut);
     time = {
         min: "00",
         sec: "30",
     };
-    clearTimeout(audioTimeOut);
 
     // Score reset
     score = 0;
@@ -266,7 +271,7 @@ const init = () => {
     playerHeight = gameAreaHeight / 16;
     playerX = gameAreaX + playerWidth * playerRandomGridX;
     playerY = gameAreaY + playerHeight * playerRandomGridY;
-    playerColor = "#4A5B8C";
+    playerColor = "#DBF227";
 
     gameArea = new Sprite(gameAreaX, gameAreaY, gameAreaWidth, gameAreaHeight, 0, 0, gameAreaColor);
     player = new Sprite(playerX, playerY, playerWidth, playerHeight, (playerWidth + playerHeight) / 2, (playerWidth + playerHeight) / 2, playerColor);
@@ -412,7 +417,7 @@ const showFinalScore = () => {
 
     // Restart Button
     let buttonFontSize = playerHeight / 1.5;
-    let buttonFontX = slot4.x - playerHeight/6;
+    let buttonFontX = slot4.x - playerHeight / 6;
     let buttonFontY = slot4.y + playerHeight / 1.2;
 
     ctx.font = `${buttonFontSize}px "Press Start 2P"`;
