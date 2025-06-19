@@ -1,4 +1,4 @@
-# Mini_Game
+# Mini-Game
 
 This is a mini-game built with HTML Canvas.
 <ul>
